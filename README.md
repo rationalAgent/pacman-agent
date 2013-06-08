@@ -11,3 +11,8 @@ i - up
 k - down
 
 a - start agent
+
+credits
+=======
+
+Original code taken from https://github.com/MarquisdeGeek/pacman
