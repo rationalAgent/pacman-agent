@@ -256,7 +256,7 @@ int i,j;
 
 	i = CenteredX("Score : 123456");	/* get a pos base on av score digits */
 	mvprintw(5,i,"Score : %d", ptr->Player.iScore);
-	mvprintw(6,i,"HIGH  : %D", ptr->iHighScore);
+	mvprintw(6,i,"HIGH  : %d", ptr->iHighScore);
 	mvprintw(8,i,"Level : %d", ptr->iLevel+1);
 	if (LINES-1 >= ptr->iMapHeight)	/* completely underneath map */
 		i = 0;
