@@ -1,0 +1,3 @@
+*.o
+src/pacman
+src/analyze_output
