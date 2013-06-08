@@ -1,12 +1,13 @@
 pacman
 ======
 
-ASCII Pacman game, written with curses
+ASCII Pacman game, written with curses, with an optional search agent
 
 Use the keys:
 
-x - left
-c - right
-k - up
-m - down
+j - left
+l - right
+i - up
+k - down
 
+a - start agent

@@ -2,14 +2,15 @@
 #CFLAGS = -Wall 
 LDFLAGS = -lncurses
 
-pacman: pacman.o player.o ghosts.o pills.o render.o board.o gameloop.o 
+pacman: pacman.o player.o ghosts.o pills.o render.o board.o gameloop.o analyze.o
 pacman.o: pacman.h render.h gameloop.h
 player.o: pacman.h player.h ghosts.h pills.h board.h
 ghosts.o: pacman.h ghosts.h board.h
 board.o:  pacman.h board.h player.h ghosts.h pills.h
-gameloop.o: pacman.h gameloop.h player.h ghosts.h pills.h board.h render.h
+gameloop.o: pacman.h gameloop.h player.h ghosts.h pills.h board.h render.h analyze.h
 render.o: pacman.h render.h board.h
 pills.o: pacman.h pills.h board.h
+analyze.o: pacman.h analyze.h gameloop.h player.h ghosts.h pills.h board.h render.h analyze.h
 
 install:
 	cat *.c *.h >pactext

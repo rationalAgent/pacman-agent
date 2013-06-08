@@ -1,4 +1,3 @@
-
 #include <stdio.h>
 #include <sys/time.h>
 #include <unistd.h>
@@ -12,6 +11,8 @@
 #include "board.h"
 #include "render.h"
 #include "pills.h"
+#include "analyze.h"
+
 
 /*
   I got a little bored I'm afraid writing bits of this, which is why
@@ -29,64 +30,61 @@ static void DrawDynamic(void *pCtx, GAME_STATE *ptr)
 
 tGameEnd Pac_GameLoop(void *pCtx, GAME_STATE *ptr)
 {
-int c,keypress;
-float telaps;
-struct timeval iTk, iTk2, tvTelaps;
+	int c, keypress;
+	float telaps;
 
-do {
-keypress = ptr->Player.iLastValidDir;
-gettimeofday(&iTk, 0);
+	do {
+		keypress = Pac_AnalyzeGameState(*ptr);
+		
+		int CenteredStr = CenteredX("Key Hint: A");
+		mvprintw(24, CenteredStr, "Key Hint: %c", keypress);
 
-/* Wait 1/10 sec , getting whatever key's been pressed */
-
-do {
-	c = getch();
-	if (c != EOF)
-if (c != ptr->Player.iLastValidDir)
-		keypress = c;
-
-	if (c=='q' || c=='Q')
-		return ePAC_UserQuit;
-
-	gettimeofday(&iTk2, 0);
-	timersub(&iTk2, &iTk, &tvTelaps);
-	telaps = tvTelaps.tv_sec + tvTelaps.tv_usec/1000;
-	telaps /= 1000.0f;
-
-
-#if _DEBUG
-move(21,30); printw(" clock=%ld  telaps=%f key=%c last=%c", clock(), telaps, keypress, ptr->Player.iLastValidDir);
-move(23,30); printw("  pills=%d", ptr->iDotsLeft);
-printw("tv %d + %d/1000", tvTelaps.tv_sec, tvTelaps.tv_usec);
-#endif
-	if (telaps < 0) { fprintf(stderr, "how?????"); break; }
-	} while(telaps < 0.1f);
-
-	/* scroll marquee */
-	if (ptr->pMarquee)
-		{
-		c = *ptr->pMarquee;
-		memmove(ptr->pMarquee, ptr->pMarquee+1, ptr->iMarqueeSize-1);
-		ptr->pMarquee[ptr->iMarqueeSize-1] = c;
+		if (ptr->Player.Agent == ePAC_Human) {
+			while (c = getch()) {
+				if (c == PACKEY_UP ||
+			    	c == PACKEY_DOWN ||
+					c == PACKEY_RIGHT || 
+					c == PACKEY_LEFT ||
+					c == 'q' || 
+					c == 'a') break;
+			}
+			if (c == 'q' || c == 'Q')
+				return ePAC_UserQuit;
+			keypress = c;
+			if (c == 'a') {
+				ptr->Player.Agent = ePAC_Computer;
+			}
 		}
 
-	/* Update all game components */
-	Pac_UpdatePlayer(ptr, telaps, keypress);
-	Pac_CheckPlayerVsGhosts(ptr);
-	Pac_UpdateGhosts(ptr, telaps);
-	Pac_CheckPlayerVsGhosts(ptr);
-	Pac_UpdatePills(ptr, telaps);
+		telaps = 0.2;
 
-	/* Draw everything */
-	DrawDynamic(pCtx, ptr);
+		/* scroll marquee */
+		if (ptr->pMarquee) {
+			c = *ptr->pMarquee;
+			memmove(ptr->pMarquee, ptr->pMarquee+1, ptr->iMarqueeSize-1);
+			ptr->pMarquee[ptr->iMarqueeSize-1] = c;
+		}
 
-	/* Make it visible */
-	Pac_Blit(pCtx);
+		/* Update all game components */
+		Pac_UpdatePlayer(ptr, telaps, keypress);
+		Pac_CheckPlayerVsGhosts(ptr);
+		Pac_UpdateGhosts(ptr, telaps);
+		Pac_CheckPlayerVsGhosts(ptr);
+		Pac_UpdatePills(ptr, telaps);
 
-	/* Has an end game condition been reached? */
-	if (ptr->iDotsLeft == 0)	return ePAC_SheetComplete;
-	else if (ptr->Player.bDead)	return ePAC_LifeLost;
+		/* Draw everything */
+		DrawDynamic(pCtx, ptr);
 
+		/* Make it visible */
+		Pac_Blit(pCtx);
+
+		/* Has an end game condition been reached? */
+		if (ptr->iDotsLeft == 0)	return ePAC_SheetComplete;
+		else if (ptr->Player.bDead)	return ePAC_LifeLost;
+
+		// if (ptr->iDotsLeft < 50) ptr->Player.Agent = ePAC_Human;
+		
+		usleep(80000);
 	} while(1);
 }
 
@@ -126,5 +124,3 @@ tGameEnd iGS;
 	
 	} while(iGS != ePAC_UserQuit);
 }
-
-

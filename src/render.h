@@ -1,4 +1,3 @@
-
 #ifndef _RENDER_H
 #define _RENDER_H
 
@@ -14,6 +13,8 @@ void *Pac_InitRender(void);
 BOOL Pac_CloseRender(void *);
 void Pac_Blit(void *);
 
+int CenteredX(char *);
+
 void Pac_DrawBoard(void *, GAME_STATE *ptr);
 void Pac_DrawPlayer(void *, GAME_STATE *ptr);
 void Pac_DrawGhosts(void *, GAME_STATE *ptr);
@@ -27,4 +28,3 @@ void Pac_RenderGameInfo(void *);
 void Pac_RenderRHS(void *, GAME_STATE *ptr);
 
 #endif	/* _RENDER_H */
-

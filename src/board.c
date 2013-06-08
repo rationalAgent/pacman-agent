@@ -98,4 +98,3 @@ int i;
 		if (ptr->Map[--i] == '.')
 			ptr->iDotsLeft++;
 }
-

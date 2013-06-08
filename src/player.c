@@ -18,6 +18,7 @@ int i;
 void Pac_InitialisePlayer(GAME_STATE *ptr)
 {
 	ptr->Player.iLives = 3;
+	ptr->Player.iScore = 0;
 	Pac_ReinitialisePlayer(ptr);
 }
 
@@ -31,6 +32,7 @@ G_PLAYER *pPlayer=&ptr->Player;
 	pPlayer->iLastValidDir = PACKEY_LEFT;
 	pPlayer->fTimecum = 0;
 	pPlayer->iAnimFrame = 0;
+	pPlayer->Agent = ePAC_Human;
 }
 
 void Pac_CheckPlayerVsGhosts(GAME_STATE *ptr)
@@ -138,5 +140,12 @@ char c;
 	/* High? */
 	if (ptr->Player.iScore > ptr->iHighScore)
 		ptr->iHighScore = ptr->Player.iScore;
-}
+	
+	if (ptr->Player.iScore == iPrevScore) {
+		ptr->Player.iScore--;
+	}
 
+	if (ptr->Player.iScore < 0) {
+		ptr->Player.iScore = 0;
+	}
+}

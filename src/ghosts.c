@@ -133,12 +133,14 @@ static void DormantGhost(GAME_STATE *ptr, G_GHOST *pGhost)
 void Pac_InitialiseGhosts(GAME_STATE *ptr)
 {
 int i;
-
-	for(i=0;i<MAX_GHOSTS;i++)
+int xBase = 12;
+	
+	for(i=0;i<MAX_GHOSTS;i++) {
 		ptr->Ghosts[i].bActive = 0;
-	Pac_ActivateGhost(&ptr->Ghosts[0], 12,10, eDIR_Left);
-	Pac_ActivateGhost(&ptr->Ghosts[1], 14,10, eDIR_Left);
-	Pac_ActivateGhost(&ptr->Ghosts[2], 16,10, eDIR_Left);
+		if (RND(2)) {
+			Pac_ActivateGhost(&ptr->Ghosts[i], xBase + 2*i, 10, eDIR_Left);
+		}
+	}
 }
 
 void Pac_ActivateGhost(G_GHOST *pGhost, int x, int y, tDir eDir)

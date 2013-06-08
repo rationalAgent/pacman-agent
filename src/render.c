@@ -1,4 +1,3 @@
-
 #include <ncurses.h>
 #include <unistd.h>
 #include <string.h>
@@ -68,7 +67,7 @@ void Pac_Blit(void *pCtx)
 	refresh();
 }
 
-static int CenteredX(char *pStr)
+int CenteredX(char *pStr)
 {
 int cx, leftedge=32;
 
@@ -224,12 +223,16 @@ char *szAnim = "|Vv_.+*X*+. ";
 
 void Pac_RenderGameInfo(void *pCtx)
 {
-char *s1 = "ASCII Pacman - Steven Goodwin 2002";
+char *s1 = "ASCII Pacman";
+char *s11 = "Original Author: Steven Goodwin (2002)";
+char *s12 = "Search Agent: Alakh Dhruv Chopra (2013)";
 char *s2 = "Released under the GPL";
 
 	clear();
 	attron(COLOR_PAIR(PC_PILL));
-	mvprintw(2,CenteredX(s1), s1);
+	mvprintw(0,CenteredX(s1), s1);
+	mvprintw(1,CenteredX(s11), s11);
+	mvprintw(2,CenteredX(s12), s12);
 	attroff(COLOR_PAIR(PC_PILL));
 	attron(COLOR_PAIR(PC_PACMAN));
 	mvprintw(3,CenteredX(s2), s2);
@@ -253,7 +256,7 @@ int i,j;
 
 	i = CenteredX("Score : 123456");	/* get a pos base on av score digits */
 	mvprintw(5,i,"Score : %d", ptr->Player.iScore);
-	mvprintw(6,i,"High  : %d", ptr->iHighScore);
+	mvprintw(6,i,"HIGH  : %D", ptr->iHighScore);
 	mvprintw(8,i,"Level : %d", ptr->iLevel+1);
 	if (LINES-1 >= ptr->iMapHeight)	/* completely underneath map */
 		i = 0;
@@ -261,6 +264,15 @@ int i,j;
 		i = ptr->iMapWidth;
 	if (ptr->pMarquee)
 		mvprintw(LINES-1, i, "%.*s", COLS-i, ptr->pMarquee);
+	
+	char *s0 = "Instructions";
+	char *s1 = "Move using the i, j, k, l key";
+	char *s2 = "Activate agent with a";
+	attron(COLOR_PAIR(PC_PILL));
+	mvprintw(12,CenteredX(s0), s0);
+	attroff(COLOR_PAIR(PC_PILL));
+	mvprintw(14,CenteredX(s1), s1);
+	mvprintw(15,CenteredX(s2), s2);
 }
 
 BOOL Pac_AnotherGame(void *pCtx)
@@ -269,8 +281,8 @@ char *s1 = "Another game, squire?";
 char *s2 = "Y/N";
 
 	attron(COLOR_PAIR(PC_GHOST));
-	mvprintw(12,CenteredX(s1), s1);
-	mvprintw(14,CenteredX(s2), s2);
+	mvprintw(17,CenteredX(s1), s1);
+	mvprintw(19,CenteredX(s2), s2);
 	attroff(COLOR_PAIR(PC_GHOST));
 
 	do {
